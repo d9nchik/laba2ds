@@ -25,7 +25,15 @@ def create_adjacency_matrix(idata):
     for y in range(1, len(idata)):
         matrix[idata[y][0] - 1][idata[y][1] - 1] = 1
         matrix[idata[y][1] - 1][idata[y][0] - 1] = 1
+    return matrix
 
+def create_adjacency_matrix_oriented(idata):
+    matrix = [0] * idata[0][0]
+    for x in range(idata[0][0]):
+        matrix[x] = [0] * idata[0][0]
+
+    for y in range(1, len(idata)):
+        matrix[idata[y][0] - 1][idata[y][1] - 1] = 1
     return matrix
 
 
@@ -89,15 +97,52 @@ def find_diameter(move_matrixy):
     for x in range(len(digits)):
         if minimum == digits[x]:
             print(x + 1, end=" ")
+    print()
+    return maximum
 
 
-graph = get_data()
-adjacency = create_adjacency_matrix(graph)
-print("Матриця суміжності: ")
-show_matrix(adjacency)
-print("Матриця відстані: ")
-move_matrix = get_move_matrix(adjacency)
-print("Матриця досяжності: ")
-show_matrix(move_matrix)
+def get_reachability_matrix(move_matrixes):
+    rechability_matrix = copy.deepcopy(move_matrixes)
+    for i in range(len(move_matrixes)):
+        for j in range(len(move_matrixes)):
+            if rechability_matrix[i][j] > 0:
+                rechability_matrix[i][j] = 1
+            elif rechability_matrix[i][j] == -1:
+                rechability_matrix[i][j] = 0
+    return rechability_matrix
 
-find_diameter(move_matrix)
+
+def find_tiers_of_graph(move_matrixes, diameter):
+    print("Яруси графу: ")
+    for x in range(len(move_matrixes)):
+        print("Вершина %s" % (x + 1))
+        for y in range(1, diameter + 1):
+            print("на відстані %s -" % (y), end=" ")
+            for j in range(len(move_matrix)):
+                if move_matrix[x][j] == y:
+                    print(j + 1, end=" ")
+            print()
+
+
+
+if int(input("Показати частину (1,2): ")) == 1:
+    graph = get_data()
+    adjacency = create_adjacency_matrix(graph)
+    print("Матриця суміжності: ")
+    show_matrix(adjacency)
+    print("Матриця відстані: ")
+    move_matrix = get_move_matrix(adjacency)
+    print("Матриця досяжності: ")
+    show_matrix(get_reachability_matrix(move_matrix))
+    diameter = find_diameter(move_matrix)
+    print()
+    find_tiers_of_graph(move_matrix, diameter)
+else:
+    graph = get_data()
+    adjacency = create_adjacency_matrix_oriented(graph)
+    print("Матриця суміжності: ")
+    show_matrix(adjacency)
+    print("Матриця відстані: ")
+    move_matrix = get_move_matrix(adjacency)
+    print("Матриця досяжності: ")
+    show_matrix(get_reachability_matrix(move_matrix))
