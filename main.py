@@ -41,7 +41,10 @@ def create_adjacency_matrix_oriented(idata):
 def show_matrix(matrix):
     for i in range(len(matrix)):
         for j in range(len(matrix[i])):
-            print("%2d" % matrix[i][j], end=" ")
+            if matrix[i][j] == -1:
+                print("%2s" % ('∞'), end=" ")
+            else:
+                print("%2d" % matrix[i][j], end=" ")
         print()
     print()
 
@@ -68,12 +71,12 @@ def get_move_matrix(matrix):
                     continue
                 if in_degree[i][j] > 0:
                     matrix[i][j] = x + 1
-    show_matrix(matrix)
+
     for j in range(len(matrix)):
         for m in range(len(matrix[0])):
             if matrix[j][m] == 0 and m != j:
                 matrix[j][m] = -1
-
+    show_matrix(matrix)
     return matrix
 
 
