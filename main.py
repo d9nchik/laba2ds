@@ -27,6 +27,7 @@ def create_adjacency_matrix(idata):
         matrix[idata[y][1] - 1][idata[y][0] - 1] = 1
     return matrix
 
+
 def create_adjacency_matrix_oriented(idata):
     matrix = [0] * idata[0][0]
     for x in range(idata[0][0]):
@@ -93,7 +94,7 @@ def find_diameter(move_matrixy):
             minimum = digits[x]
     print("Діаметр графу: %d" % maximum)
     print("Радіус графа: %d" % minimum)
-    print("Вершини графу:", end=' ')
+    print("Центри графу:", end=' ')
     for x in range(len(digits)):
         if minimum == digits[x]:
             print(x + 1, end=" ")
@@ -109,20 +110,21 @@ def get_reachability_matrix(move_matrixes):
                 rechability_matrix[i][j] = 1
             elif rechability_matrix[i][j] == -1:
                 rechability_matrix[i][j] = 0
+            elif i == j:
+                rechability_matrix[i][j] = 1
     return rechability_matrix
 
 
-def find_tiers_of_graph(move_matrixes, diameter):
+def find_tiers_of_graph(move_matrixes, diameters):
     print("Яруси графу: ")
     for x in range(len(move_matrixes)):
         print("Вершина %s" % (x + 1))
-        for y in range(1, diameter + 1):
+        for y in range(1, diameters + 1):
             print("на відстані %s -" % (y), end=" ")
             for j in range(len(move_matrix)):
                 if move_matrix[x][j] == y:
                     print(j + 1, end=" ")
             print()
-
 
 
 if int(input("Показати частину (1,2): ")) == 1:
