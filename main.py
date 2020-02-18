@@ -60,7 +60,8 @@ def pow_matrix(matrix1, matrix2):
     return temp
 
 
-def get_move_matrix(matrix):
+def get_move_matrix(matrix1):
+    matrix=copy.deepcopy(matrix1)
     gold_image = copy.deepcopy(matrix)
     in_degree = copy.deepcopy(matrix)
     for x in range(1, len(matrix)):
@@ -85,17 +86,21 @@ def find_diameter(move_matrixy):
     for i in range(len(move_matrixy)):
         maximum = move_matrixy[i][0]
         for j in range(len(move_matrixy)):
-            if maximum < move_matrixy[i][j]:
+            if maximum < move_matrixy[i][j] and i != j:
                 maximum = move_matrixy[i][j]
         digits.append(maximum)
     maximum = digits[0]
     minimum = digits[0]
     for x in range(1, len(digits)):
-        if maximum < digits[x]:
+        if (maximum < digits[x] and maximum != -1) or digits[x] == -1:
             maximum = digits[x]
-        elif (minimum > digits[x] > 0) or (minimum < 1 and digits[x] > 0):
+        elif (minimum > digits[x] > 0 and digits[x] != -1) or (minimum == -1 and digits[x] >= 0):
             minimum = digits[x]
-    print("Діаметр графу: %d" % maximum)
+    print("Діаметр графу: ", end="")
+    if maximum != -1:
+        print("%d" % maximum)
+    else:
+        print('∞')
     print("Радіус графа: %d" % minimum)
     print("Центри графу:", end=' ')
     for x in range(len(digits)):
@@ -119,6 +124,8 @@ def get_reachability_matrix(move_matrixes):
 
 
 def find_tiers_of_graph(move_matrixes, diameters):
+    if (diameters == -1):
+        diameters = len(move_matrix)
     print("Яруси графу: ")
     for x in range(len(move_matrixes)):
         print("Вершина %s" % (x + 1))
@@ -128,6 +135,64 @@ def find_tiers_of_graph(move_matrixes, diameters):
                 if move_matrix[x][j] == y:
                     print(j + 1, end=" ")
             print()
+
+
+def is_one(matrixes):
+    for i in range(len(matrixes)):
+        for j in range(len(matrixes)):
+            if (matrixes[i][j] == 0):
+                return False
+    return True
+
+
+def transpone_matrix(matrixes):
+    size = len(matrixes)
+    temp = [0] * size
+    for x in range(size):
+        temp[x] = [0] * size
+    for i in range(size):
+        for j in range(size):
+            temp[i][j] = matrixes[j][i]
+    return temp
+
+
+def matrix_adding(matrix1, matrix2):
+    size = len(matrix1)
+    temp = [0] * size
+    for x in range(size):
+        temp[x] = [0] * size
+    for i in range(size):
+        for j in range(size):
+            temp[i][j] = matrix1[i][j] + matrix2[i][j]
+            if temp[i][j] > 1:
+                temp[i][j] = 1
+    return temp
+
+
+def pow_in_n_matrix(matrixes):
+    k = len(matrixes)
+    temp = copy.deepcopy(matrixes)
+    for z in range(k):
+        temp = pow_matrix(temp, matrixes)
+
+    for i in range(k):
+        for j in range(k):
+            if (temp[i][j] > 0):
+                temp[i][j] = 1
+    return temp
+
+
+def is_simple_conection(matrixe_adjancency):
+    imatrix = [0] * len(matrixe_adjancency)
+    for x in range(len(matrixe_adjancency)):
+        imatrix[x] = [0] * len(matrixe_adjancency)
+
+    for i in range(len(matrixe_adjancency)):
+        imatrix[i][i] = 1
+    imatrix = matrix_adding(imatrix, transpone_matrix(matrixe_adjancency))
+    imatrix = matrix_adding(imatrix, matrixe_adjancency)
+    imatrix = pow_in_n_matrix(imatrix)
+    return is_one(imatrix)
 
 
 if int(input("Показати частину (1,2): ")) == 1:
@@ -150,4 +215,14 @@ else:
     print("Матриця відстані: ")
     move_matrix = get_move_matrix(adjacency)
     print("Матриця досяжності: ")
-    show_matrix(get_reachability_matrix(move_matrix))
+    rechability_matrix = get_reachability_matrix(move_matrix)
+    show_matrix(rechability_matrix)
+    print("Тип графу:")
+    if is_one(rechability_matrix):
+        print("Сильно зв'язаний граф!")
+    elif is_one(matrix_adding(rechability_matrix, transpone_matrix(rechability_matrix))):
+        print("Однобічна зв'язність")
+    elif is_simple_conection(adjacency):
+        print("Слабка зв'язність")
+    else:
+        print("Незв'язний")
