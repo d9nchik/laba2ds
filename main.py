@@ -61,7 +61,7 @@ def pow_matrix(matrix1, matrix2):
 
 
 def get_move_matrix(matrix1):
-    matrix=copy.deepcopy(matrix1)
+    matrix = copy.deepcopy(matrix1)
     gold_image = copy.deepcopy(matrix)
     in_degree = copy.deepcopy(matrix)
     for x in range(1, len(matrix)):
@@ -94,14 +94,18 @@ def find_diameter(move_matrixy):
     for x in range(1, len(digits)):
         if (maximum < digits[x] and maximum != -1) or digits[x] == -1:
             maximum = digits[x]
-        elif (minimum > digits[x] > 0 and digits[x] != -1) or (minimum == -1 and digits[x] >= 0):
+        if minimum > digits[x]:
             minimum = digits[x]
     print("Діаметр графу: ", end="")
     if maximum != -1:
         print("%d" % maximum)
     else:
         print('∞')
-    print("Радіус графа: %d" % minimum)
+    print("Радіус графа: ", end="")
+    if minimum != -1:
+        print("%d" % minimum)
+    else:
+        print('∞')
     print("Центри графу:", end=' ')
     for x in range(len(digits)):
         if minimum == digits[x]:
